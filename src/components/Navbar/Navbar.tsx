@@ -25,24 +25,19 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            className="menu menu-md dropdown-content bg-base-100 text-gray-900 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li>
-              <a>Item 1</a>
+              <Link href="/">Home</Link>
             </li>
             <li>
-              <a>Parent</a>
-              <ul className="p-2">
-                <li>
-                  <a>Submenu 1</a>
-                </li>
-                <li>
-                  <a>Submenu 2</a>
-                </li>
-              </ul>
+              <Link href="/allBikes">All Bikes</Link>
             </li>
             <li>
-              <a>Item 3</a>
+              <Link href="/aboutus">About us</Link>
+            </li>
+            <li>
+              <Link href="/contactus">Contact us</Link>
             </li>
           </ul>
         </div>

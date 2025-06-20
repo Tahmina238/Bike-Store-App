@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
 import axios from "axios";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import signup from "../../../public/signup/signup.json";
+import signup from "@/data/signup.json"; // ✅ Fixed import path
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
+
+// ✅ Fix SSR issues by dynamically loading Lottie
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -23,38 +27,38 @@ const SignupPage = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // prevent page reload
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    console.log(formData);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/signup",
+        formData
+      );
+      toast.success("Registered Successfully!");
 
-    axios
-      .post("http://localhost:5000/signup", formData)
-      .then((response) => {
-        console.log("Response:", response.data);
-        toast.success("Rigister Successfully");
-        // Optional: Clear form
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          image: "",
-        });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Signup failed!");
+      // Optional: Clear form after success
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        image: "",
       });
+    } catch (error) {
+      console.error("Signup error:", error);
+      toast.error("Signup failed!");
+    }
   };
 
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
-          <Lottie animationData={signup} loop={true} />
+          <Lottie animationData={signup} loop />
         </div>
-        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-          <h1 className="text-2xl text-center">SignUp</h1>
+
+        <div className="card bg-base-100 w-full max-w-sm shadow-2xl">
+          <h1 className="text-2xl text-center mt-4">Sign Up</h1>
           <div className="card-body">
             <form onSubmit={handleSubmit}>
               <label className="label">Full Name</label>
@@ -62,7 +66,7 @@ const SignupPage = () => {
                 name="name"
                 type="text"
                 className="input input-bordered w-full"
-                placeholder="Enter your fullname"
+                placeholder="Enter your full name"
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -72,7 +76,7 @@ const SignupPage = () => {
                 name="email"
                 type="email"
                 className="input input-bordered w-full"
-                placeholder="Email"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -82,17 +86,17 @@ const SignupPage = () => {
                 name="password"
                 type="password"
                 className="input input-bordered w-full"
-                placeholder="Password"
+                placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
               />
 
-              <label className="label">Image</label>
+              <label className="label">Image URL</label>
               <input
                 name="image"
                 type="text"
                 className="input input-bordered w-full"
-                placeholder="Input your Image"
+                placeholder="Profile image URL"
                 value={formData.image}
                 onChange={handleChange}
               />
